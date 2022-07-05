@@ -11,8 +11,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
  
  
-from .serializers import NoteSerializer
-from base.models import Note
+# from .serializers import NoteSerializer
+# from base.models import Note
  
  
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -41,35 +41,35 @@ def getRoutes(request):
     return Response(routes)
  
  
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def getNotes(request):
-    print("innnn")
-    user = request.user
-    print(user)
-    notes = user.note_set.all()
-    print(notes)
-    serializer = NoteSerializer(notes, many=True)
-    return Response(serializer.data)
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def getNotes(request):
+#     print("innnn")
+#     user = request.user
+#     print(user)
+#     notes = user.note_set.all()
+#     print(notes)
+#     serializer = NoteSerializer(notes, many=True)
+#     return Response(serializer.data)
  
  
 # register
-def addUser(request):
-    User.objects.create_user(username='john2311',
-                                 email='jlen34non@beatl1es1.com',
-                                 password='gl44ass onion11')
-    return JsonResponse({"done":"tes"} )
+# def addUser(request):
+#     User.objects.create_user(username='john2311',
+#                                  email='jlen34non@beatl1es1.com',
+#                                  password='gl44ass onion11')
+#     return JsonResponse({"done":"tes"} )
  
  
  
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def addNote(request):
-    print(request.data)
-    user = request.user
-    Note.objects.create(body=request.data["notebody"],user=user)
-    print(user)
-    notes = user.note_set.all()
-    print(notes)
-    serializer = NoteSerializer(notes, many=True)
-    return Response(serializer.data)
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def addNote(request):
+#     print(request.data)
+#     user = request.user
+#     Note.objects.create(body=request.data["notebody"],user=user)
+#     print(user)
+#     notes = user.note_set.all()
+#     print(notes)
+#     serializer = NoteSerializer(notes, many=True)
+#     return Response(serializer.data)
