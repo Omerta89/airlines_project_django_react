@@ -1,8 +1,14 @@
 from rest_framework.serializers import ModelSerializer
-# from base.models import Note
+from base.models import Airline,CustomerProfile
  
  
-# class NoteSerializer(ModelSerializer):
-#     class Meta:
-#         model = Note
-#         fields = '__all__'
+class AirlineSerializer(ModelSerializer):
+    class Meta:
+        model = Airline
+        fields = '__all__'
+
+
+class CustomerProfileSerializer(ModelSerializer):
+    class Meta:
+        model = CustomerProfile
+        fields = '__all__'

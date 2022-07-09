@@ -2,26 +2,30 @@
 
 ## i have made it, i am
 ## i have used this technologies, web-frameworks, their main purpose is (copy requirements)
-## project profile
-charts/models
 
+## project profile
+- models:create,insert mock data file,query - check
+- update/upgrade requirements file and install - check
+-   crud:
+- signup/adduser-check
+- login-check
+- get user airline (all)- buggy error- 'User' object has no attribute 'airline_set', checked sql join, same error for customerprofile model.
+- add profile to user - check
 
 
 ## Todo:
-charts/models
-which data i want to display
-make queries-using sql to check data is comming back
-make sure they are connected
-examine models: sketch on paper, write sql queries
-
-create models (_set is join from 27.6 lesson)
+crud- get all airline info (general)
+seriliazer
+fix-customerprofile-phone number is char, change to int,same for credit card
 
 
-
+## End-points (urls)
+http://127.0.0.1:8000/adduser/ - post add user
+http://127.0.0.1:8000/token/ - post login (return token)
+http://127.0.0.1:8000/addprofile/ - post add profile to user
+http://127.0.0.1:8000/airline/ - get all user airline info - method not working
 
 ### To remember-
-unqiue field model = CharField(unique=True, null=True, blank=True)
-
 profile the back-side of project, write it, profile front
 module unit test
 py-doc
@@ -82,9 +86,6 @@ Id: int (PK) (AI)
 First Name: text
 Last Name: text
 User_Id: bigint (U) (FK)
-
-
-## End-points (urls)
 
 ## Testing
 thunder client
