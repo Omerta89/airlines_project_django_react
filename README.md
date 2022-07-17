@@ -4,26 +4,30 @@
 ## i have used this technologies, web-frameworks, their main purpose is (copy requirements)
 
 ## project profile
-- models:create,insert mock data file,query - check
-- update/upgrade requirements file and install - check
+- models:create,insert mock data file,query
+- update/upgrade requirements file and install
 -   crud:
 - signup/adduser-check
 - login-check
-- get user airline (all)- buggy error- 'User' object has no attribute 'airline_set', checked sql join, same error for customerprofile model.
-- add profile to user - check
+- get airline info for user
+- add profile to user
+- addairlineforuser - connect new airline to user. unique - only one user for an airliner company
+- get all user customerprofile info - not working
+- get all users - restricted to admin
 
 
 ## Todo:
 crud- get all airline info (general)
 seriliazer
-fix-customerprofile-phone number is char, change to int,same for credit card
-
 
 ## End-points (urls)
 http://127.0.0.1:8000/adduser/ - post add user
 http://127.0.0.1:8000/token/ - post login (return token)
 http://127.0.0.1:8000/addprofile/ - post add profile to user
-http://127.0.0.1:8000/airline/ - get all user airline info - method not working
+http://127.0.0.1:8000/airline/ - get all user airline info
+http://127.0.0.1:8000/addairlineforuser/ - connect airline to user
+http://127.0.0.1:8000/cusprofile// - get all user customerprofile info - not working
+http://127.0.0.1:8000/getallusers/ - get all users - restricted to admin
 
 ### To remember-
 profile the back-side of project, write it, profile front

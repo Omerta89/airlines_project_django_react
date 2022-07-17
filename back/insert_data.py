@@ -2,40 +2,40 @@ import sqlite3
 con = sqlite3.connect('./back/db.sqlite3')
 cur = con.cursor()
 
-# # Insert a row of data
-# #                         # country
-# cur.execute("INSERT INTO base_country VALUES (1,'israel')")
-# cur.execute("INSERT INTO base_country VALUES (2,'germany')")
-# cur.execute("INSERT INTO base_country VALUES (3,'switzerland')")
+# Insert a row of data
+#                         # country
+cur.execute("INSERT INTO base_Country VALUES (1,'israel')")
+cur.execute("INSERT INTO base_Country VALUES (2,'germany')")
+cur.execute("INSERT INTO base_Country VALUES (3,'switzerland')")
 
-#                         # airline
-# cur.execute("INSERT INTO base_airline VALUES (1,'luftanza', 1, 1)")
-# cur.execute("INSERT INTO base_airline VALUES (2,'el-al', 2, 2)")
-# cur.execute("INSERT INTO base_airline VALUES (3,'swiss-air', 3, 3)")
+                        # airline
+cur.execute("INSERT INTO base_airlinecompany VALUES (1,'el-al',1, 1)")
+cur.execute("INSERT INTO base_airlinecompany VALUES (2,'luftanza',2, 2)")
+cur.execute("INSERT INTO base_airlinecompany VALUES (3,'swiss-air',3, 3)")
 
-#                         # flight
-# cur.execute("INSERT INTO base_flight VALUES (1, '2006-10-25 14:30', '2006-10-25 14:55',6,1, 1, 2)")
-# cur.execute("INSERT INTO base_flight VALUES (2, '2006-10-27 8:30', '2006-10-28 11:30',10,2, 2, 3)")
-# cur.execute("INSERT INTO base_flight VALUES (3,'2006-10-25 5:30', '2006-10-25 9:00',15,3, 3, 1)")
-
-
-#                         # CustomerProfile
-# cur.execute("INSERT INTO base_CustomerProfile VALUES (1, 'dereh hamacabim', 054557876,4580546456, 4)")
-# cur.execute("INSERT INTO base_CustomerProfile VALUES (2,'rehov hayesod', 05246743,458096515, 5)")
-# cur.execute("INSERT INTO base_CustomerProfile VALUES (3, 'amnon 16',057821356,45803467893, 6)")
+                        # flight
+cur.execute("INSERT INTO base_flight VALUES (1,'2006-10-25 14:30', '2006-10-25 14:55',6,1, 1, 2)")
+cur.execute("INSERT INTO base_flight VALUES (2,'2006-10-27 8:30', '2006-10-28 11:30',10,2, 2, 3)")
+cur.execute("INSERT INTO base_flight VALUES (3,'2006-10-25 5:30', '2006-10-25 9:00',15,3, 3, 1)")
 
 
-# #                         # Ticket
-# cur.execute("INSERT INTO base_Ticket VALUES (1,1,1)")
-# cur.execute("INSERT INTO base_Ticket VALUES (2,2,2)")
-# cur.execute("INSERT INTO base_Ticket VALUES (3,3,3)")
-# print('inserted')
+                        # CustomerProfile
+cur.execute("INSERT INTO base_CustomerProfile VALUES (1,'dereh hamacabim',4580546456, 1,054557876)")
+cur.execute("INSERT INTO base_CustomerProfile VALUES (2,'rehov hayesod', 458096515,2,05246743)")
+cur.execute("INSERT INTO base_CustomerProfile VALUES (3,'amnon 16',45803467893,3,057821356)")
+
+
+#                         # Ticket
+cur.execute("INSERT INTO base_Ticket VALUES (1,1,1)")
+cur.execute("INSERT INTO base_Ticket VALUES (2,2,2)")
+cur.execute("INSERT INTO base_Ticket VALUES (3,3,3)")
+print('inserted')
 
 
 
-#     # save
-# con.commit()
-# con.close()
+    # save
+con.commit()
+con.close()
 
 #       DB queries - checking all is connected and working properly
 #                    which data i want to display
@@ -74,8 +74,8 @@ cur = con.cursor()
 #     print(row)
 
 # i want to display... user airline(join)
-for row in cur.execute('\
-    SELECT * FROM base_airline \
-                    inner join auth_user on base_airline.user_id = auth_user.id   \
-                           '):
-    print(row)
+# for row in cur.execute('\
+#     SELECT * FROM base_airline \
+#                     inner join auth_user on base_airline.user_id = auth_user.id   \
+#                            '):
+#     print(row)

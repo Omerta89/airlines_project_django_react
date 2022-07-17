@@ -2,11 +2,11 @@ from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from base.models import CustomerProfile,Airline
+from base.models import CustomerProfile,AirlineCompany
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User
-from .serializers import AirlineSerializer, CustomerProfileSerializer
+from ..serializers import AirlineSerializer, CustomerProfileSerializer, UserInfoSerializer ,UsersSerSerializer
 
 
 @api_view(['GET'])
@@ -35,12 +35,14 @@ def addUser(request):
     try:
         User.objects.create_user(username=request.data['username'],
                             email=request.data['email'],
-                            password=request.data['password'], is_staff=True)
+                            password=request.data['password'], 
+                            is_staff=request.data['is_staff'],
+                            is_superuser=request.data['is_superuser'])
     except:
         return Response({"User already exists ":request.data['username']})
     return JsonResponse({"user added":request.data['username']} )
  
- 
+# add profile to user
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addProfile(request):
@@ -52,32 +54,47 @@ def addProfile(request):
     # Profile.objects.get(user_id=user.id)
     return Response({"Profile created":user.username})
  
+#   get user info, specific to the one logged in with
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserInfo(request):
+    print("innnn")
+    user = request.user
+    print(user)
+    users = User.objects.all()
+    print(users)
+    serializer = UserInfoSerializer(users, many=True)
+    return Response(serializer.data)
  
- 
- 
- 
- 
-#   get all airline info
+# add airline to user specific
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addAirlineForUSER(request):
+    user = request.user
+    if user.is_staff :
+        print ("continue....")
+    AirlineCompany.objects.create(airline_name=request.data['airline_name'] ,country_id=request.data['country_id'],user=user)
+    print(user)
+    # airlines = user.airline_set.all()
+    # print(airlines)
+    # serializer = ProductSerializer(products, many=True)
+    return Response({"airline added":request.data['airline_name']})
 
- 
- 
- 
-#  #   get all airline info (through user info which is foreign key connected to airline)
+#  get airline info for user(through user info which is foreign key connected to airline)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getAirlines(request):
     print("innnn")
     user = request.user
     print(user)
-    # print(user.airline)
-    airlines = user.airline_set.all()
-    # airlines = user.airline.country
+    airlines = user.airlinecompany_set.all()
     print(airlines)
     serializer = AirlineSerializer(airlines, many=True)
     return Response(serializer.data)
 
- 
 
+
+# get customerprofile info for user - not working, tryin to get single field data with error
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getCustomerProfile(request):
@@ -93,15 +110,18 @@ def getCustomerProfile(request):
 
 
 
- 
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def addNote(request):
-#     print(request.data)
-#     user = request.user
-#     Note.objects.create(body=request.data["notebody"],user=user)
-#     print(user)
-#     notes = user.note_set.all()
-#     print(notes)
-#     serializer = NoteSerializer(notes, many=True)
-#     return Response(serializer.data)
+
+# get all users - restricted to admin
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def getAllUsers(request):
+    user = request.user
+    res=[]
+    if user.is_superuser :
+        allUsers= User.objects.all()
+        for eachUser in allUsers:
+            res.append(UsersSerSerializer(eachUser))
+        return JsonResponse(res,safe=False)
+    else:
+        return Response({"access to display all users is restricted to admin":user.username})
+
