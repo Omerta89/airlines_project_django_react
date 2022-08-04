@@ -1,3 +1,22 @@
+# todo
+
+CRUD :)
+delete back
+
+add flight works from gui --- with auth to server!
+
+
+
+
+
+
+add flight to user
+
+connect company name flights
+create a method to change country id to country name
+
+
+
 # this project is about, and it does
 
 ## i have made it, i am
@@ -14,9 +33,12 @@
 - addairlineforuser - connect new airline to user. unique - only one user for an airliner company
 - get all user customerprofile info - not working
 - get all users - restricted to admin
-
+GET ALL tables, admin restricted.
 
 ## Todo:
+
+getUserInfo is not user specific, change description .and it has duplicate get all users
+
 crud- get all airline info (general)
 seriliazer
 
@@ -28,6 +50,7 @@ http://127.0.0.1:8000/airline/ - get all user airline info
 http://127.0.0.1:8000/addairlineforuser/ - connect airline to user
 http://127.0.0.1:8000/cusprofile// - get all user customerprofile info - not working
 http://127.0.0.1:8000/getallusers/ - get all users - restricted to admin
+http://127.0.0.1:8000/getallairlines/
 
 ### To remember-
 profile the back-side of project, write it, profile front

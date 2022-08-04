@@ -14,7 +14,16 @@ urlpatterns = [
     path('getuserinfo/', admin_views.getUserInfo),
     path('addairlineforuser/', admin_views.addAirlineForUSER),
     path('getallusers/', admin_views.getAllUsers),
-
+    path('getallairlines/', admin_views.getAllAirlinesInfo),
+    path('getallprofiles/', admin_views.getAllProfilesInfo),
+    path('getallcountrys/', admin_views.getAllCountrysInfo),
+    path('getallflights/', admin_views.getAllFlightsInfo),
+    path('getalltickets/', admin_views.getAllTicketsInfo),
+    path('addcountry/', admin_views.addCountry),
+    path('addflight/', admin_views.addFlight),
+    path('addticket/', admin_views.addTicketForProfile),
+    path('deleteflight/', admin_views.deleteFlight),
+    path('deleteflight/<int:_id>', admin_views.deleteFlight),
     
     # auth-register
     path('adduser/', admin_views.addUser),

@@ -5,9 +5,9 @@ class Country(models.Model):
     _id=models.AutoField(primary_key=True,editable=False)
     country_name=models.CharField(max_length=50,null=False,unique=True)
     def __str__(self):
-         	return f" {self.country_name} "
+         	return f" {self._id} "
 class AirlineCompany(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE,null=False) #bigint
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=False,unique=True ) #bigint
     _id=models.BigAutoField(primary_key=True,editable=False)
     airline_name=models.CharField(max_length=50,null=False,unique=True)
     country=models.ForeignKey(Country,on_delete=models.SET_NULL,null=True) #int
@@ -18,9 +18,9 @@ class Flight(models.Model):
     departure_time=models.DateTimeField()
     landing_time=models.DateTimeField()
     remaining_tickets=models.IntegerField()
-    airline_company=models.ForeignKey(AirlineCompany,on_delete=models.SET_NULL,null=True) #bigint    
+    airline_company=models.ForeignKey(AirlineCompany,on_delete=models.SET_NULL,null=True, related_name='airline_company') #bigint    
     destination_country=models.ForeignKey(Country,on_delete=models.SET_NULL,null=True, related_name='arrival_country_id') #int
-    origin_country=models.ForeignKey(Country,on_delete=models.SET_NULL,null=True) #int
+    origin_country=models.ForeignKey(Country,on_delete=models.SET_NULL,null=True, related_name='origin_country_id') #int
     def __str__(self):
      	return f" {self._id} "
 class CustomerProfile(models.Model):  
@@ -28,9 +28,9 @@ class CustomerProfile(models.Model):
     address=models.CharField(max_length=50)
     phone_num=models.IntegerField(null=False,unique=True)
     credit_card=models.IntegerField(null=False,unique=True)
-    user=models.OneToOneField(User,on_delete=models.CASCADE,null=False) #bigint
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=False,unique=True) #bigint
     def __str__(self):
-         	return f" {self.phone_num} - {self.address} "
+         	return f" {self.user} "
       
 class Ticket(models.Model):  
     _id=models.BigAutoField(primary_key=True,editable=False)
