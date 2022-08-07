@@ -2,17 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectFlights, getFlightsAsync, addFlightAsync, updFlightAsync, deleteFlightAsync, } from "./flightSlice";
 import { selectlogin, selectUsername } from "../user/loginSlice";
-import {selectToken,  } from "../user/loginSlice";
+import { selectToken, } from "../user/loginSlice";
 import "../../styles.css";
 
 const Flights = () => {
-  const myToken =   useSelector(selectToken);
+  const myToken = useSelector(selectToken);
   const myFlights = useSelector(selectFlights);
   const loginStatus = useSelector(selectlogin);
   const userName = useSelector(selectUsername);
   const dispatch = useDispatch();
   const [airline_company, setairline_company] = useState("");
+  const [remaining_tickets, setremaining_tickets] = useState(0);
   const [destination_country, setdestination_country] = useState("");
+  const [origin_country, setorigin_country] = useState("");
+  const [departure_date, setdeparture_date] = useState("");
+  const [departure_time, setdeparture_time] = useState("");
+  const [landing_time, setlanding_time] = useState("");
+  const [landing_date, setlanding_date] = useState("");
   const [search, setSearch] = useState("");
   const [searchCompany, setSearchCompany] = useState("");
   useEffect(() => {
@@ -22,29 +28,31 @@ const Flights = () => {
 
   return (
     <div>
-      {/* {myToken} */}
       <div style={{ backgroundColor: "cyan" }}>
-
         <h5>Admin Section</h5>
         <h6> {loginStatus ? `Hello ${userName}` : "Hello annoymous User"} </h6>
-        Company: <input onChange={(e) => setairline_company(e.target.value)} />
-        destination_country: <input onChange={(e) => setdestination_country(e.target.value)} />
-
-
-
+       {/* add flight (input, button) */}
+        Airline Company (name must match existing airline_name): <input onChange={(e) => setairline_company(e.target.value)} /><hr />
+        destination_country (must be country id, *later turn to name): <input onChange={(e) => setdestination_country(e.target.value)} /><hr />
+        origin_country (must match existing country id in db, must be country id, *later turn to name): <input onChange={(e) => setorigin_country(e.target.value)} /><hr />
+        remaining_tickets: <input onChange={(e) => setremaining_tickets(e.target.value)} /><hr />
+        departure_date: <input type={"date"} onChange={(e) => setdeparture_date(e.target.value)} />
+        departure_time: <input type={"time"} onChange={(e) => setdeparture_time(e.target.value)} /><hr />
+        landing_date: <input type={"date"} onChange={(e) => setlanding_date(e.target.value)} />
+        landing_time: <input type={"time"} onChange={(e) => setlanding_time(e.target.value)} />
         <button
           onClick={() =>
             dispatch(
               addFlightAsync({
-                departure_time: "2006-10-25 14:30",
-                landing_time:"2006-10-25 15:40",
-                remaining_tickets:"100",
-                destination_country: 1,
-                airline_company: 1,
-                origin_country:1,
-                mysentToken:`${myToken}`
-              }, 
-             
+                departure_time: `${departure_date} ${departure_time}`,
+                landing_time: `${landing_date} ${landing_time}`,
+                remaining_tickets: remaining_tickets,
+                destination_country: destination_country,
+                airline_company: airline_company,
+                origin_country: origin_country,
+                mysentToken: myToken
+              },
+
               )
             )
           }
@@ -52,6 +60,9 @@ const Flights = () => {
           Add flight
         </button>
       </div>
+
+            {/* end of add flight section */}
+
       <h1> ELALA - terminal </h1>
       Search : <input onChange={(e) => setSearch(e.target.value)} />
       searchCompany : <input onChange={(e) => setSearchCompany(e.target.value)} />
@@ -69,8 +80,8 @@ const Flights = () => {
       {myFlights.map((flight, i) => (
         <div key={i}>
 
-          <div className="w3-container" style={{"backgroundColor": "steelblue"}} >
-         
+          <div className="w3-container" style={{ "backgroundColor": "steelblue" }} >
+
             <h3>airline_company:  {flight.airline_company}</h3>
 
             <div className="w3-card-4" style={{ "width": "70%" }} >
@@ -84,11 +95,11 @@ const Flights = () => {
                 </p>
                 <hr />
                 <img src="airplane.jpg" alt="airplane" className="w3-left w3-circle w3-margin-right photo " style={{ "display": "flex", "flexDirection": "row" }}  ></img>
-                
-                departure_time: {flight.departure_time} <hr /> landing_time: {flight.landing_time}  <hr />remaining_tickets: {flight.remaining_tickets} <br/>
+
+                departure_time: {flight.departure_time} <hr /> landing_time: {flight.landing_time}  <hr />remaining_tickets: {flight.remaining_tickets} <br />
 
 
- 
+
 
 
                 <button className="w3-button w3-block w3-dark-grey"

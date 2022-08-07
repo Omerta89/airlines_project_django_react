@@ -178,11 +178,12 @@ def addFlight(request):
     # if user.is_staff:
     # try:
     Flight.objects.create(
-            departure_time=request.data['departure_time'],landing_time=request.data['landing_time'],
+            departure_time=request.data['departure_time'],
+            landing_time=request.data['landing_time'],
             remaining_tickets=request.data['remaining_tickets'],
             destination_country = Country.objects.get(_id=request.data['destination_country']),
             origin_country_id=request.data['origin_country'],
-            airline_company=AirlineCompany.objects.get(_id=user.id))
+            airline_company=AirlineCompany.objects.get( airline_name=request.data['airline_company']))
     return Response(f"flight added by {user.username} going to country id={Country.objects.get(_id=request.data['destination_country'])}")
     # except:
     #     return Response("something failed")

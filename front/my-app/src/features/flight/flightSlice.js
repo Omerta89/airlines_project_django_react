@@ -62,16 +62,19 @@ export const flightSlice = createSlice({
       .addCase(addFlightAsync.fulfilled, (state, action) => {
         state.flights.push(action.payload);
         console.log(action.payload)
-
+      })
+      .addCase(addFlightAsync.pending, (state, action) => {
+        console.log("rejected");
+        console.log(action.payload)
       })
       .addCase(updFlightAsync.fulfilled, (state, action) => {
         console.log(action.payload);
         let updFlight = state.flights.find(
-          (flight) => flight.id === action.payload.id
-        );
+          (flight) => flight.id === action.payload.id);
         updFlight.destination = action.payload.destination;
         updFlight.companyName = action.payload.companyName;
-      }).addCase(deleteFlightAsync.fulfilled, (state, action) => {
+      })
+      .addCase(deleteFlightAsync.fulfilled, (state, action) => {
         console.log(action.payload)
         state.flights = state.flights.filter(x => x.id !== action.payload);
       });
