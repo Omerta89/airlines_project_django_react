@@ -6,9 +6,11 @@ from base.models import Country, CustomerProfile, AirlineCompany, Flight, Ticket
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User
-from ..serializers import AirlineSerializer, CountrySerializer, CustomerProfileSerializer, FlightSerializer, TicketSerializer, UserInfoSerializer, UsersSerSerializer
+from ..serializers import AirlineSerializer, CountrySerializer, CustomerProfileSerializer, FlightSerializer, TicketSerializer, UserInfoSerializer, UsersSerSerializer, aircompanyIdToNameSerializer
 
 # starter page
+
+
 @api_view(['GET'])
 def getRoutes(request):
     routes = [
@@ -17,6 +19,8 @@ def getRoutes(request):
     return Response(routes)
 
 # login
+
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -25,6 +29,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         # ...
         return token
+
+
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
@@ -41,7 +47,6 @@ def addUser(request):
         return JsonResponse({"user added": request.data['username']})
     except:
         return Response({"User already exists ": request.data['username']})
-
 
 
 #   PROFILE
@@ -73,6 +78,8 @@ def addProfile(request):
     # Profile.objects.get(user_id=user.id)
 
 # get customerprofile info for user
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getCustomerProfile(request):
@@ -97,7 +104,6 @@ def getUserInfo(request):
         return Response({"access to display all users is restricted to admin": user.username})
 
 
-
 # get all users - func. seri, +restricted to admin
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -111,8 +117,6 @@ def getAllUsers(request):
         return JsonResponse(res, safe=False)
     else:
         return Response({"access to display all users is restricted to admin": user.username})
-
-
 
 
 #   AIRLINE
@@ -131,7 +135,6 @@ def getAllAirlinesInfo(request):
         return Response({"access to display all airline companies is restricted to admin": user.username})
 
 
-
 # add airline to user specific
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -140,13 +143,12 @@ def addAirlineForUSER(request):
     try:
         if user.is_staff:
             AirlineCompany.objects.create(
-            airline_name=request.data['airline_name'], country_id=request.data['country_id'], user_id=user.id)
-            return Response({ f"{request.data['airline_name']} added to {user.username}: succeeded"})
+                airline_name=request.data['airline_name'], country_id=request.data['country_id'], user_id=user.id)
+            return Response({f"{request.data['airline_name']} added to {user.username}: succeeded"})
         else:
             return Response({"access to attach airline to user is restricted to staff": user.username})
     except:
         return Response({"attaching airline to user didnt work because of unique constraint, user already has airline profile": user.username})
-
 
 
 #  get airline info specific for user
@@ -157,6 +159,24 @@ def getAirlines(request):
     airlines = user.airlinecompany_set.all()
     serializer = AirlineSerializer(airlines, many=True)
     return Response(serializer.data)
+
+# convert airline company id to name, to display
+# maybe each time request from server, or get all list and use there what i need
+@api_view(['GET'])
+def convertAircompanyIDtoName(request):
+    # each instance calling
+    aircompanyobj=AirlineCompany.objects.get(
+            _id=request.data['airline_id'])
+    return JsonResponse(aircompanyobj.airline_name, safe=False) 
+    
+    
+    # all instances calling
+    # res = []
+    # allAircompany = AirlineCompany.objects.all()
+    # for eachCompany in allAircompany:
+    #     res.append(aircompanyIdToNameSerializer(eachCompany))
+    # return JsonResponse(res, safe=False)
+
 
 
 #       FLIGHT
@@ -169,7 +189,7 @@ def getAllFlightsInfo(request):
     return Response(serializer.data)
 
 
-# add flight to airline_company
+# add flight general
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addFlight(request):
@@ -178,35 +198,50 @@ def addFlight(request):
     # if user.is_staff:
     # try:
     Flight.objects.create(
-            departure_time=request.data['departure_time'],
-            landing_time=request.data['landing_time'],
-            remaining_tickets=request.data['remaining_tickets'],
-            destination_country = Country.objects.get(_id=request.data['destination_country']),
-            origin_country_id=request.data['origin_country'],
-            airline_company=AirlineCompany.objects.get( airline_name=request.data['airline_company']))
-    return Response(f"flight added by {user.username} going to country id={Country.objects.get(_id=request.data['destination_country'])}")
+        departure_time=request.data['departure_time'],
+        landing_time=request.data['landing_time'],
+        remaining_tickets=request.data['remaining_tickets'],
+        destination_country=Country.objects.get(
+            country_name=request.data['destination_country']),
+        origin_country=Country.objects.get(
+            country_name=request.data['origin_country']),
+        airline_company=AirlineCompany.objects.get(airline_name=request.data['airline_company']))
+    return Response(f"flight added by {user.username} going to country name={request.data['destination_country']} and country id={Country.objects.get(country_name=request.data['destination_country'])}")
     # except:
     #     return Response("something failed")
     # else:
     #     return Response({"access to add flight is restricted to staff": user.username})
 
+#  Delete Flight
 
-# SomeModel.objects.filter(id=id).delete()
+
 @api_view(['DELETE'])
-def deleteFlight(request,_id):
-    try:
-        # Flight.objects.delete()
-        # Flight.objects.delete(
-        #         flight_id=Flight.objects.get(_id=id))
-        # print(Flight.objects.get(_id=request.id))
-        print({_id.id})
-        # print(flight_id=Flight.objects.get(_id=_id.id))
-        return Response({f"flight deleted"})
-    except:
-        print(Flight.objects.get(_id=id))
-        return Response({"something failed"})
+@permission_classes([IsAuthenticated])
+def deleteFlight(request, id):
+    # try:
+    Flight.delete(Flight.objects.get(_id=id))
+    return Response({"flight deleted": id})
+    # except:
+    #     return Response({"something failed": id})
 
 
+# Update Flight
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updFlight(request, id):
+    temp = Flight.objects.get(_id=id)
+    temp.landing_time = request.data['landing_time']
+    temp.departure_time = request.data['departure_time']
+    temp.remaining_tickets = request.data['remaining_tickets']
+    temp.destination_country = Country.objects.get(
+        country_name=request.data['destination_country'])
+    temp.origin_country = Country.objects.get(
+        country_name=request.data['origin_country'])
+    temp.airline_company = AirlineCompany.objects.get(
+        airline_name=request.data['airline_company'])
+
+    temp.save()
+    return Response({'id': id})
 
 
 #       TICKET
@@ -224,27 +259,24 @@ def getAllTicketsInfo(request):
         return Response({"access to display all tickets is restricted to admin": user.username})
 
 
-
-
 # add ticket to profile --- how to connect customer and flight foreign key??
 # stage2:when ticket added, it needs to update remaining tickets of flight model
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addTicketForProfile(request):
     # try:
-        user = request.user
-        print(user.customerprofile_set.all().count)
-        if (user.customerprofile_set.all().count): #returns empty array, how to check if array not empty?
-            Ticket.objects.create(
-                customer=request.data['country_id'], 
-                flight=request.data['country_id'], 
-                user_id=user.id)
-            return Response({"ticket added": user.username})
-        else:
-            return Response({"something went wrong, maybe Profile already has ticket ": user.username})
+    user = request.user
+    print(user.customerprofile_set.all().count)
+    if (user.customerprofile_set.all().count):  # returns empty array, how to check if array not empty?
+        Ticket.objects.create(
+            customer=request.data['country_id'],
+            flight=request.data['country_id'],
+            user_id=user.id)
+        return Response({"ticket added": user.username})
+    else:
+        return Response({"something went wrong, maybe Profile already has ticket ": user.username})
     # except:
     #     return Response({"Profile already has ticket ": user.username})
-
 
 
 #       COUNTRY
@@ -262,15 +294,14 @@ def getAllCountrysInfo(request):
         return Response({"access to display all countries is restricted to admin": user.username})
 
 # add country
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addCountry(request):
     try:
         Country.objects.create(
-                country_name=request.data['country_name'])
+            country_name=request.data['country_name'])
         return Response({"country added": request.data['country_name']})
     except:
         return Response({"country already exists": request.data['country_name']})
-
-
-

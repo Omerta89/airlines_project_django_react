@@ -26,9 +26,9 @@ export const addFlightAsync = createAsyncThunk(
 // call the methods in the API
 export const deleteFlightAsync = createAsyncThunk(
   "flight/deleteFlight",
-  async (id) => {
-    await deleteFlight(id.id);
-    return id.id;
+  async (myid_token) => {
+    await deleteFlight(myid_token);
+    return myid_token.flight_id;
   }
 );
 
@@ -37,19 +37,28 @@ export const updFlightAsync = createAsyncThunk(
   "flight/updFlight",
   async (newFlight) => {
     let newBody = {
-      destination: newFlight.destination,
-      companyName: newFlight.companyName,
+      destination_country: newFlight.destination_country,
+      origin_country: newFlight.origin_country,
+      airline_company: newFlight.airline_company,
+      remaining_tickets: newFlight.remaining_tickets,
+      departure_time: newFlight.departure_time,
+      landing_time: newFlight.landing_time,
     };
     let id = newFlight.id;
-    const response = await updFlight(newBody, id);
+    let myToken = newFlight.myToken;
+    const response = await updFlight(newBody, id, myToken);
     return response.data;
   }
 );
+
+
 
 export const flightSlice = createSlice({
   name: "flight",
   initialState,
   reducers: {
+
+
     // increment: (state) => {
     //   state.value += 1;
     // },
@@ -68,18 +77,27 @@ export const flightSlice = createSlice({
         console.log(action.payload)
       })
       .addCase(updFlightAsync.fulfilled, (state, action) => {
-        console.log(action.payload);
+        console.log(state.flights);
+        // console.log(action.payload.id)
         let updFlight = state.flights.find(
-          (flight) => flight.id === action.payload.id);
-        updFlight.destination = action.payload.destination;
-        updFlight.companyName = action.payload.companyName;
+          (flight) =>
+            flight.id === action.payload.id);
+        // console.log(updFlight)
+        updFlight.destination_country = action.payload.destination_country;
+        updFlight.airline_company = action.payload.airline_company;
+        updFlight.origin_country = action.payload.origin_country;
+        updFlight.remaining_tickets = action.payload.remaining_tickets;
+        updFlight.departure_time = action.payload.departure_time;
+        updFlight.landing_time = action.payload.landing_time;
       })
       .addCase(deleteFlightAsync.fulfilled, (state, action) => {
         console.log(action.payload)
-        state.flights = state.flights.filter(x => x.id !== action.payload);
+        state.flights = state.flights.filter(x => x._id !== action.payload);
       });
+
   },
 });
+
 
 // export const { } = flightSlice.actions;
 export const selectFlights = (state) => state.flight.flights;

@@ -39,7 +39,6 @@ export const loginSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(doLoginAsync.fulfilled, (state, action) => {
-      console.log(action.payload.access);
       state.token = action.payload.access;
       localStorage.setItem("token", state.token);
       state.loginStatus = true;

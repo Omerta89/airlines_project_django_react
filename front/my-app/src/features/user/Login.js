@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { doLoginAsync, selectlogin, logout, selectUsername, selectBadCredMsg } from "./loginSlice";
 const Login = () => {
   const dispatch = useDispatch();
-  const [user, setUser] = useState("");
-  const [pwd, setPwd] = useState("");
+  const [user, setUser] = useState("yuval admin");
+  const [pwd, setPwd] = useState("123");
   const loginStatus = useSelector(selectlogin);
   const userName = useSelector(selectUsername);
   const badCredMsg = useSelector(selectBadCredMsg);

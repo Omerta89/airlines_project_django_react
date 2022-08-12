@@ -11,14 +11,14 @@ const Flights = () => {
   const loginStatus = useSelector(selectlogin);
   const userName = useSelector(selectUsername);
   const dispatch = useDispatch();
-  const [airline_company, setairline_company] = useState("");
-  const [remaining_tickets, setremaining_tickets] = useState(0);
-  const [destination_country, setdestination_country] = useState("");
-  const [origin_country, setorigin_country] = useState("");
-  const [departure_date, setdeparture_date] = useState("");
-  const [departure_time, setdeparture_time] = useState("");
-  const [landing_time, setlanding_time] = useState("");
-  const [landing_date, setlanding_date] = useState("");
+  const [airline_company, setairline_company] = useState("aircompanytest");
+  const [remaining_tickets, setremaining_tickets] = useState(55);
+  const [destination_country, setdestination_country] = useState("spain");
+  const [origin_country, setorigin_country] = useState("germany");
+  const [departure_date, setdeparture_date] = useState("2022-08-25");
+  const [departure_time, setdeparture_time] = useState("21:23:00");
+  const [landing_time, setlanding_time] = useState("21:23:00");
+  const [landing_date, setlanding_date] = useState("2022-08-26");
   const [search, setSearch] = useState("");
   const [searchCompany, setSearchCompany] = useState("");
   useEffect(() => {
@@ -31,10 +31,10 @@ const Flights = () => {
       <div style={{ backgroundColor: "cyan" }}>
         <h5>Admin Section</h5>
         <h6> {loginStatus ? `Hello ${userName}` : "Hello annoymous User"} </h6>
-       {/* add flight (input, button) */}
+        {/* add flight (input, button) */}
         Airline Company (name must match existing airline_name): <input onChange={(e) => setairline_company(e.target.value)} /><hr />
-        destination_country (must be country id, *later turn to name): <input onChange={(e) => setdestination_country(e.target.value)} /><hr />
-        origin_country (must match existing country id in db, must be country id, *later turn to name): <input onChange={(e) => setorigin_country(e.target.value)} /><hr />
+        name of destination_country (must match db): <input onChange={(e) => setdestination_country(e.target.value)} /><hr />
+        name of origin_country (must match existing country name in db): <input onChange={(e) => setorigin_country(e.target.value)} /><hr />
         remaining_tickets: <input onChange={(e) => setremaining_tickets(e.target.value)} /><hr />
         departure_date: <input type={"date"} onChange={(e) => setdeparture_date(e.target.value)} />
         departure_time: <input type={"time"} onChange={(e) => setdeparture_time(e.target.value)} /><hr />
@@ -61,12 +61,11 @@ const Flights = () => {
         </button>
       </div>
 
-            {/* end of add flight section */}
+      {/* end of add flight section */}
 
       <h1> ELALA - terminal </h1>
-      Search : <input onChange={(e) => setSearch(e.target.value)} />
-      searchCompany : <input onChange={(e) => setSearchCompany(e.target.value)} />
-      {myFlights.length}
+      Search : <input onChange={(e) => setSearch(e.target.value)} /> &nbsp;
+      Search Airline Company : <input onChange={(e) => setSearchCompany(e.target.value)} />
 
 
       {/* fix filter, problem: include getting something else from array/string */}
@@ -77,6 +76,8 @@ const Flights = () => {
         ) */}
       {/* breaking filter to do lion in the desert */}
       <h2>Flights</h2>
+      number of flights: {myFlights.length}
+
       {myFlights.map((flight, i) => (
         <div key={i}>
 
@@ -86,7 +87,7 @@ const Flights = () => {
 
             <div className="w3-card-4" style={{ "width": "70%" }} >
               <header className="w3-container w3-light-grey">
-                <h3>Flights _id: {flight._id} </h3>
+                <h3>Flight _id: {flight._id} </h3>
               </header>
               <div className="w3-container">
 
@@ -106,9 +107,15 @@ const Flights = () => {
                   onClick={() =>
                     dispatch(
                       updFlightAsync({
+                        id: flight._id,
+                        departure_time: `${departure_date} ${departure_time}`,
+                        landing_time: `${landing_date} ${landing_time}`,
+                        remaining_tickets: remaining_tickets,
                         destination_country: destination_country,
                         airline_company: airline_company,
-                        id: flight._id,
+                        origin_country: origin_country,
+                        myToken: myToken
+
                       })
                     )
                   }
@@ -116,7 +123,7 @@ const Flights = () => {
                   Update
                 </button>
                 <button className="w3-button w3-block w3-dark-grey"
-                  onClick={() => dispatch(deleteFlightAsync({ id: flight._id }))}>
+                  onClick={() => dispatch(deleteFlightAsync({ flight_id: flight._id, myToken: myToken }))}>
                   Delete
                 </button>
                 <br />

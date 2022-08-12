@@ -3,30 +3,43 @@ const MY_SERVER = " http://127.0.0.1:8000/";
 
 export function getFlights() {
   return new Promise((resolve) =>
-    axios(MY_SERVER+"getallflights/").then((res) => resolve({ data: res.data }))
+    axios(MY_SERVER + "getallflights/").then((res) => resolve({ data: res.data }))
   );
 }
 
 export function addFlight(newFlight) {
   return new Promise((resolve) =>
-    axios.post(MY_SERVER+"addflight/", newFlight, {
+    axios.post(MY_SERVER + "addflight/", newFlight, {
       headers: {
-        'Authorization': `Bearer ${newFlight.mysentToken}` 
+        'Authorization': `Bearer ${newFlight.mysentToken}`
       }
     }).then((res) => resolve({ data: res.data }))
-  , console.log(newFlight));
+    , console.log(newFlight));
 }
 
-export function deleteFlight(id) {
+export function deleteFlight(myid_token) {
   return new Promise((resolve) =>
-    axios.delete(MY_SERVER+ "deleteflight/").then((res) => resolve({ data: res.data }))
+    axios.delete(MY_SERVER + "deleteflight/" + myid_token.flight_id, {
+      headers: {
+        'Authorization': `Bearer ${myid_token.myToken}`
+      }
+    })
+      .then((res) => resolve({ data: res.data }))
+    , console.log(myid_token.flight_id)
   );
 }
 
-export function updFlight(newFlight, id) {
+export function updFlight(newFlight, id, myToken) {
   return new Promise((resolve) =>
     axios
-      .put(MY_SERVER + id, newFlight)
+      .put(MY_SERVER + "updflight/" + id, newFlight, {
+        headers: {
+          'Authorization': `Bearer ${myToken}`
+        }
+      })
       .then((res) => resolve({ data: res.data }))
+
   );
 }
+
+

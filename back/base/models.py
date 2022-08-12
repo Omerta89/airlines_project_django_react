@@ -13,7 +13,7 @@ class AirlineCompany(models.Model):
     country=models.ForeignKey(Country,on_delete=models.SET_NULL,null=True) #int
     def __str__(self):
      	return f" {self.airline_name} "
-class Flight(models.Model):   
+class Flight(models.Model):
     _id=models.BigAutoField(primary_key=True,editable=False)
     departure_time=models.DateTimeField()
     landing_time=models.DateTimeField()

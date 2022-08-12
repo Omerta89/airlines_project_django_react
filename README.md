@@ -1,19 +1,45 @@
-# todo
+# Instructions
+- Running Django: 1) cd .\back\ 2) .\myenv\Scripts\activate 3) python .\manage.py runserver
+- Running React: 1) cd .\front\ 2) cd .\my-app\ 3) npm start
 
+
+# Scribble
+search
+
+
+
+# Progress
+flight - add, post, delete, update done.
 CRUD :)
-delete back
+admin:
+* add flight - working with auth
+add validations: (notify if aircompany name is not a match to DB), (departure_time cannot exceed arrival_time)
+* delete flight - working with auth but add validations
 
-add flight works from gui --- with auth to server!
+# Issues/bugs
+- upd flight>flightslice>extra reducer-values not loading in gui upon update
+- (react, flights, include) - recieves something other than arrary/string
+
+# Todo Features
+- notify on token expire, better refresh it (example in eyal's shelly project)
+- in display get - show country name instead of id
+
+# Todo - back
+Django server - remaining endpoint crud: (resources: eyal and tom projects) specific get - 1. flights.airline 2. flights.country x2 3. ticket.profile 4. profile.flight. get one - most crud. post - ticket to profile. delete - most crud.
+
+
+# Working summary - front
+* Components: 
+1. login
+2. admin
+* Features: 
+1. token saved in local storage and resets on logout
+2. on bad login wrong crediantials msg
+3. username display and login changes to logout
 
 
 
 
-
-
-add flight to user
-
-connect company name flights
-create a method to change country id to country name
 
 
 

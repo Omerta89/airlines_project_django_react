@@ -22,8 +22,11 @@ urlpatterns = [
     path('addcountry/', admin_views.addCountry),
     path('addflight/', admin_views.addFlight),
     path('addticket/', admin_views.addTicketForProfile),
-    path('deleteflight/', admin_views.deleteFlight),
-    path('deleteflight/<int:_id>', admin_views.deleteFlight),
+    path('deleteflight/<int:id>', admin_views.deleteFlight),
+    path('updflight/<int:id>', admin_views.updFlight),
+    path('companyidtoname/', admin_views.convertAircompanyIDtoName),
+    
+    
     
     # auth-register
     path('adduser/', admin_views.addUser),
@@ -31,3 +34,5 @@ urlpatterns = [
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+
+
