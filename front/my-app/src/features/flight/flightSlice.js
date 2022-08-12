@@ -1,8 +1,10 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+// eslint-disable-next-line no-unused-vars
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import { getFlights, addFlight, updFlight, deleteFlight } from "./flightAPI";
 
 const initialState = {
   flights: [],
+  airname: []
 };
 
 // call the methods in the API
@@ -10,6 +12,7 @@ export const getFlightsAsync = createAsyncThunk(
   "flight/getFlights",
   async () => {
     const response = await getFlights();
+    // console.log(response.data.nameconvert[0].airline_company)
     return response.data;
   }
 );
@@ -36,17 +39,7 @@ export const deleteFlightAsync = createAsyncThunk(
 export const updFlightAsync = createAsyncThunk(
   "flight/updFlight",
   async (newFlight) => {
-    let newBody = {
-      destination_country: newFlight.destination_country,
-      origin_country: newFlight.origin_country,
-      airline_company: newFlight.airline_company,
-      remaining_tickets: newFlight.remaining_tickets,
-      departure_time: newFlight.departure_time,
-      landing_time: newFlight.landing_time,
-    };
-    let id = newFlight.id;
-    let myToken = newFlight.myToken;
-    const response = await updFlight(newBody, id, myToken);
+    const response = await updFlight(newFlight);
     return response.data;
   }
 );
@@ -66,29 +59,31 @@ export const flightSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getFlightsAsync.fulfilled, (state, action) => {
-        state.flights = action.payload;
+        state.flights = action.payload.main_seri;
+        // console.log(action.payload)
+        state.airname = action.payload.nameconvert;
       })
       .addCase(addFlightAsync.fulfilled, (state, action) => {
         state.flights.push(action.payload);
         console.log(action.payload)
       })
       .addCase(addFlightAsync.pending, (state, action) => {
-        console.log("rejected");
+        console.log("pending");
         console.log(action.payload)
       })
       .addCase(updFlightAsync.fulfilled, (state, action) => {
-        console.log(state.flights);
-        // console.log(action.payload.id)
-        let updFlight = state.flights.find(
+        // console.log(current(state.flights))
+        // console.log(action.payload)
+        let myupdFlight = state.flights.find(
           (flight) =>
-            flight.id === action.payload.id);
-        // console.log(updFlight)
-        updFlight.destination_country = action.payload.destination_country;
-        updFlight.airline_company = action.payload.airline_company;
-        updFlight.origin_country = action.payload.origin_country;
-        updFlight.remaining_tickets = action.payload.remaining_tickets;
-        updFlight.departure_time = action.payload.departure_time;
-        updFlight.landing_time = action.payload.landing_time;
+            flight._id === action.payload.id);
+        // console.log(current(myupdFlight))
+        myupdFlight.destination_country = action.payload.destination_country;
+        myupdFlight.airline_company = action.payload.airline_company;
+        myupdFlight.origin_country = action.payload.origin_country;
+        myupdFlight.remaining_tickets = action.payload.remaining_tickets;
+        myupdFlight.departure_time = action.payload.departure_time;
+        myupdFlight.landing_time = action.payload.landing_time;
       })
       .addCase(deleteFlightAsync.fulfilled, (state, action) => {
         console.log(action.payload)
@@ -101,4 +96,5 @@ export const flightSlice = createSlice({
 
 // export const { } = flightSlice.actions;
 export const selectFlights = (state) => state.flight.flights;
+export const selectAirName = (state) => state.flight.airname;
 export default flightSlice.reducer;

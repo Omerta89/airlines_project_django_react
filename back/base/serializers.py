@@ -1,17 +1,16 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField,StringRelatedField
 from base.models import AirlineCompany, Country, CustomerProfile, Flight, Ticket
 from django.contrib.auth.models import User
 
    
-def aircompanyIdToNameSerializer(eachUser):
-       return {
-           
-            "user":{
-                "userName":eachUser.username,
-                "isStaff":eachUser.is_staff},
-            "customerprofile":{
-                "address":eachUser.customerprofile.address,
-                "email":eachUser.email}}
+def aircompanyIdToNameSerializer(aircompanyid):
+    aircompanyobj = AirlineCompany.objects.get(
+        _id=aircompanyid)
+    return {"airline_name":aircompanyobj.airline_name}
+                
+
+   
+    
    
    
         
@@ -57,3 +56,12 @@ class FlightSerializer(ModelSerializer):
     class Meta:
         model = Flight
         fields = '__all__'
+
+
+
+class convertidNameFlightSerializer(ModelSerializer):
+    airline_company = StringRelatedField()
+    class Meta:
+        model = Flight
+        fields = ["airline_company","_id"]
+        

@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectFlights, getFlightsAsync, addFlightAsync, updFlightAsync, deleteFlightAsync, } from "./flightSlice";
+import { selectFlights, getFlightsAsync, addFlightAsync, updFlightAsync, deleteFlightAsync, selectAirName } from "./flightSlice";
 import { selectlogin, selectUsername } from "../user/loginSlice";
 import { selectToken, } from "../user/loginSlice";
 import "../../styles.css";
+import { saveAs } from 'file-saver';
 
 const Flights = () => {
   const myToken = useSelector(selectToken);
   const myFlights = useSelector(selectFlights);
   const loginStatus = useSelector(selectlogin);
   const userName = useSelector(selectUsername);
+  const airName = useSelector(selectAirName);
   const dispatch = useDispatch();
   const [airline_company, setairline_company] = useState("aircompanytest");
   const [remaining_tickets, setremaining_tickets] = useState(55);
@@ -25,6 +27,18 @@ const Flights = () => {
     dispatch(getFlightsAsync());
     // eslint-disable-next-line
   }, []);
+// mapping flights and merging on id with airName map
+  let airline_company_names = airName.map((single_airname) => {
+    return { "_id": single_airname._id, "airline_company": single_airname.airline_company };
+  });
+  let flights_map = myFlights.map((flight) => {
+    return { "_id": flight._id, "airline_company": flight.airline_company, "remaining_tickets": flight.remaining_tickets, "landing_time": flight.landing_time, "departure_time": flight.departure_time, "origin_country": flight.origin_country, "destination_country": flight.destination_country };
+  });
+  const merged_map_name = flights_map.map(t1 => ({...t1, ...airline_company_names.find(t2 => t2._id === t1._id)}))
+
+
+  // country names
+
 
   return (
     <div>
@@ -78,7 +92,7 @@ const Flights = () => {
       <h2>Flights</h2>
       number of flights: {myFlights.length}
 
-      {myFlights.map((flight, i) => (
+      {merged_map_name.map((flight, i) => (
         <div key={i}>
 
           <div className="w3-container" style={{ "backgroundColor": "steelblue" }} >

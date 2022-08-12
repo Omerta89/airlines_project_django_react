@@ -4,7 +4,7 @@ const MY_SERVER = " http://127.0.0.1:8000/";
 export function getFlights() {
   return new Promise((resolve) =>
     axios(MY_SERVER + "getallflights/").then((res) => resolve({ data: res.data }))
-  );
+    );
 }
 
 export function addFlight(newFlight) {
@@ -29,12 +29,12 @@ export function deleteFlight(myid_token) {
   );
 }
 
-export function updFlight(newFlight, id, myToken) {
+export function updFlight(newFlight) {
   return new Promise((resolve) =>
     axios
-      .put(MY_SERVER + "updflight/" + id, newFlight, {
+      .put(MY_SERVER + "updflight/" + newFlight.id, newFlight, {
         headers: {
-          'Authorization': `Bearer ${myToken}`
+          'Authorization': `Bearer ${newFlight.myToken}`
         }
       })
       .then((res) => resolve({ data: res.data }))
