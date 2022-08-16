@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectFlights, getFlightsAsync, addFlightAsync, updFlightAsync, deleteFlightAsync, selectAirName } from "./flightSlice";
-import { selectlogin, selectUsername } from "../user/loginSlice";
+import { selectFlights, getFlightsAsync, addFlightAsync, updFlightAsync, deleteFlightAsync, selectnameconvert_airlineCountry } from "./flightSlice";
+import { selectIs_active, selectIs_staff, selectIs_superuser, selectlogin, selectUsername } from "../user/loginSlice";
 import { selectToken, } from "../user/loginSlice";
 import "../../styles.css";
-import { saveAs } from 'file-saver';
 
 const Flights = () => {
   const myToken = useSelector(selectToken);
   const myFlights = useSelector(selectFlights);
   const loginStatus = useSelector(selectlogin);
   const userName = useSelector(selectUsername);
-  const airName = useSelector(selectAirName);
+  const nameConvert = useSelector(selectnameconvert_airlineCountry);
+  const is_active = useSelector(selectIs_active); // to be used
+  const is_staff = useSelector(selectIs_staff); // to be used
+  const is_superuser = useSelector(selectIs_superuser); // to be used
   const dispatch = useDispatch();
   const [airline_company, setairline_company] = useState("aircompanytest");
   const [remaining_tickets, setremaining_tickets] = useState(55);
@@ -21,30 +23,31 @@ const Flights = () => {
   const [departure_time, setdeparture_time] = useState("21:23:00");
   const [landing_time, setlanding_time] = useState("21:23:00");
   const [landing_date, setlanding_date] = useState("2022-08-26");
-  const [search, setSearch] = useState("");
-  const [searchCompany, setSearchCompany] = useState("");
+  // eslint-disable-next-line no-unused-vars
+  const [search, setSearch] = useState(""); // to be used
+  // eslint-disable-next-line no-unused-vars
+  const [searchCompany, setSearchCompany] = useState(""); // to be used
   useEffect(() => {
     dispatch(getFlightsAsync());
     // eslint-disable-next-line
   }, []);
-// mapping flights and merging on id with airName map
-  let airline_company_names = airName.map((single_airname) => {
-    return { "_id": single_airname._id, "airline_company": single_airname.airline_company };
-  });
-  let flights_map = myFlights.map((flight) => {
+  // mapping flights and merging on id with nameConvert map. this to convert id to name. (because the two data was on two different models in back)
+  let names_map = nameConvert ? nameConvert.map((name) => {
+    return { "_id": name._id, "airline_company": name.airline_company, "origin_country": name.origin_country, "destination_country": name.destination_country };
+  }) : console.log("something is wrong with names_map")
+  let flights_map = myFlights ? myFlights.map((flight) => {
     return { "_id": flight._id, "airline_company": flight.airline_company, "remaining_tickets": flight.remaining_tickets, "landing_time": flight.landing_time, "departure_time": flight.departure_time, "origin_country": flight.origin_country, "destination_country": flight.destination_country };
-  });
-  const merged_map_name = flights_map.map(t1 => ({...t1, ...airline_company_names.find(t2 => t2._id === t1._id)}))
-
-
-  // country names
+  }) : console.log("something is wrong with flights_map")
+  const merged_map_name = flights_map.map(t1 => ({ ...t1, ...names_map.find(t2 => t2._id === t1._id) }))
 
 
   return (
     <div>
       <div style={{ backgroundColor: "cyan" }}>
-        <h5>Admin Section</h5>
-        <h6> {loginStatus ? `Hello ${userName}` : "Hello annoymous User"} </h6>
+        <h4>Admin Section</h4>
+        <h5> {loginStatus ? `Hello ${userName}` : "Hello annoymous User"} </h5>
+        <h6> {loginStatus && `This user is active: ${is_active}, is staff: ${is_staff}, is superuser: ${is_superuser}`} </h6>
+
         {/* add flight (input, button) */}
         Airline Company (name must match existing airline_name): <input onChange={(e) => setairline_company(e.target.value)} /><hr />
         name of destination_country (must match db): <input onChange={(e) => setdestination_country(e.target.value)} /><hr />

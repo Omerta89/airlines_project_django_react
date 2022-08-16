@@ -25,7 +25,7 @@ export function deleteFlight(myid_token) {
       }
     })
       .then((res) => resolve({ data: res.data }))
-    , console.log(myid_token.flight_id)
+    // , console.log(myid_token.flight_id)
   );
 }
 

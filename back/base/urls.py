@@ -24,9 +24,6 @@ urlpatterns = [
     path('addticket/', admin_views.addTicketForProfile),
     path('deleteflight/<int:id>', admin_views.deleteFlight),
     path('updflight/<int:id>', admin_views.updFlight),
-    path('companyidtoname/', admin_views.convertAircompanyIDtoName),
-    
-    
     
     # auth-register
     path('adduser/', admin_views.addUser),

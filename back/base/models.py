@@ -5,7 +5,7 @@ class Country(models.Model):
     _id=models.AutoField(primary_key=True,editable=False)
     country_name=models.CharField(max_length=50,null=False,unique=True)
     def __str__(self):
-         	return f" {self._id} "
+         	return f" {self.country_name} "
 class AirlineCompany(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,null=False,unique=True ) #bigint
     _id=models.BigAutoField(primary_key=True,editable=False)
@@ -22,7 +22,7 @@ class Flight(models.Model):
     destination_country=models.ForeignKey(Country,on_delete=models.SET_NULL,null=True, related_name='arrival_country_id') #int
     origin_country=models.ForeignKey(Country,on_delete=models.SET_NULL,null=True, related_name='origin_country_id') #int
     def __str__(self):
-     	return f" {self._id} "
+     	return f" {self._id}"
 class CustomerProfile(models.Model):  
     _id=models.BigAutoField(primary_key=True,editable=False)
     address=models.CharField(max_length=50)

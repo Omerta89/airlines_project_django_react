@@ -28,6 +28,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         # Add custom claims
         token['username'] = user.username
+        token['is_staff'] = user.is_staff
+        token['is_active'] = user.is_active
+        token['is_superuser'] = user.is_superuser
         # ...
         return token
 
@@ -161,24 +164,6 @@ def getAirlines(request):
     serializer = AirlineSerializer(airlines, many=True)
     return Response(serializer.data)
 
-# convert airline company id to name, to display
-# maybe each time request from server, or get all list and use there what i need
-
-
-@api_view(['GET'])
-def convertAircompanyIDtoName(id):
-    pass
-    # each instance calling
-    # aircompanyobj = AirlineCompany.objects.get(
-    #     _id=request.data['airline_id'])
-    # return JsonResponse(aircompanyobj.airline_name, safe=False)
-
-    # all instances calling
-    # res = []
-    # allAircompany = AirlineCompany.objects.all()
-    # for eachCompany in allAircompany:
-    #     res.append(aircompanyIdToNameSerializer(eachCompany))
-    # return JsonResponse(res, safe=False)
 
 
 #       FLIGHT
@@ -188,8 +173,9 @@ def convertAircompanyIDtoName(id):
 def getAllFlightsInfo(request):
     flights = Flight.objects.all()
     serializer = FlightSerializer(flights, many=True)
-    airlineNameSeriliazer=convertidNameFlightSerializer(flights, many=True).data
-    bothSeri={"main_seri":serializer.data,"nameconvert":airlineNameSeriliazer}
+    NameAirlineCountrySeriliazer=convertidNameFlightSerializer(flights, many=True).data
+    # print(NameAirlineCountrySeriliazer)
+    bothSeri={"main_seri":serializer.data,"nameconvert":NameAirlineCountrySeriliazer}
     return Response(bothSeri)
 
 
@@ -210,7 +196,6 @@ def addFlight(request):
         origin_country=Country.objects.get(
             country_name=request.data['origin_country']),
         airline_company=AirlineCompany.objects.get(airline_name=request.data['airline_company']))
-    
     Dict_serving_addFlight = {
     "landing_time": request.data['landing_time'],
     "departure_time": request.data['departure_time'],
@@ -219,7 +204,6 @@ def addFlight(request):
     "_id":_addFlight.pk,
     "destination_country": request.data['destination_country'],
     "origin_country": request.data['origin_country']}
-    
     return Response(Dict_serving_addFlight)
     # except:
     #     return Response("something failed")
@@ -258,11 +242,10 @@ def updFlight(request, id):
         "landing_time": temp.landing_time,
         "departure_time": temp.departure_time,
         "remaining_tickets": temp.remaining_tickets,
-        "airline_company": request.data['airline_company'],
+        "airline_company": str(temp.airline_company),
         'id': id,
-        "destination_country": request.data['destination_country'],
-        "origin_country": request.data['origin_country']}
-
+        "destination_country": str(temp.destination_country),
+        "origin_country": str(temp.origin_country)}
     temp.save()
     return JsonResponse(Dict_serving_updFlight)
 

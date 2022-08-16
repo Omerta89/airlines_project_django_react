@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import Flights from './features/flight/Flights';
-import Login from './features/user/Login';
 import { checkLogin } from './features/user/loginSlice'
 import { useDispatch } from 'react-redux';
+import { Link, Outlet } from "react-router-dom";
+
 function App() {
   const dispatch = useDispatch();
 
@@ -15,8 +15,11 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Login></Login>
-        <Flights></Flights>
+        <nav style={{ borderBottom: "solid 1px", paddingBottom: "1rem" }}>
+          <Link to="/login">login</Link>|
+          <Link to="/flights">flights</Link>|{" "}
+          <Outlet />
+        </nav>
       </header>
     </div>
   );

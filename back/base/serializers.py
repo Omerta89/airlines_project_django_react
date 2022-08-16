@@ -61,7 +61,10 @@ class FlightSerializer(ModelSerializer):
 
 class convertidNameFlightSerializer(ModelSerializer):
     airline_company = StringRelatedField()
+    destination_country = StringRelatedField()
+    origin_country = StringRelatedField()
     class Meta:
         model = Flight
-        fields = ["airline_company","_id"]
+        fields = ["airline_company","_id","destination_country","origin_country"]
+        
         
