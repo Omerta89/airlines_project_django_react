@@ -7,29 +7,40 @@ import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./features/user/Login";
 import Flights from "./features/flight/Flights";
+import AddFlight from "./features/flight/AddFlight";
+import AddCountry from "./features/country/AddCountry";
+import Register from "./features/user/Register";
+import ProfileRegister from "./features/user/ProfileRegister";
+import Countrys from "./features/country/Countrys";
+import AirlineRegister from "./features/user/AirlineRegister";
+import CustomerTickets from "./features/ticket/CustomerTickets";
+
 <link rel={"stylesheet"} href={"https://www.w3schools.com/w3css/4/w3.css"}></link> // w3 css style sheet
-
-
 
 const container = document.getElementById("root");
 const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-
-  <BrowserRouter>
+    <BrowserRouter>
       <Provider store={store}>
         <Routes>
-
-
           <Route path="/" element={<App />}>
-            <Route path="login" element={<Login />} /> 
-          <Route path="flights" element={<Flights />} />  </Route>
+            <Route path="login" element={<Login />} />
+            <Route path="flights" element={<Flights />} />
+            <Route path="addflight" element={<AddFlight />} />
+            <Route path="register" element={<Register />} />
+            <Route path="addcountry" element={<AddCountry />} />
+            <Route path="countrys" element={<Countrys />} />
+            <Route path="addprofile" element={<ProfileRegister />} />
+            <Route path="addairline" element={<AirlineRegister />} />
+            <Route path="custickets" element={<CustomerTickets />} />
+
+
+          </Route>
+          {/* 404 not found route  */}
+          <Route path="*" element={<main style={{ padding: "1rem" }}> <p>There's nothing here!</p> </main>} />
         </Routes>
-
       </Provider>
-  </BrowserRouter>
-  </React.StrictMode>
-
-
-);
+    </BrowserRouter>
+  </React.StrictMode>);

@@ -8,13 +8,14 @@ export function getFlights() {
 }
 
 export function addFlight(newFlight) {
+  console.log("token", newFlight.mysentToken.length)
   return new Promise((resolve) =>
     axios.post(MY_SERVER + "addflight/", newFlight, {
       headers: {
         'Authorization': `Bearer ${newFlight.mysentToken}`
       }
     }).then((res) => resolve({ data: res.data }))
-    , console.log(newFlight));
+    );
 }
 
 export function deleteFlight(myid_token) {
@@ -41,5 +42,3 @@ export function updFlight(newFlight) {
 
   );
 }
-
-

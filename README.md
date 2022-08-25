@@ -9,24 +9,21 @@ search
 
 
 # Progress
-flight - add, post, delete, update done.
 CRUD :)
 admin:
-* add flight - working with auth
 add validations: (notify if aircompany name is not a match to DB), (departure_time cannot exceed arrival_time)
-* delete flight - working with auth but add validations
+search
 
 # Issues/bugs
-- upd flight>flightslice>extra reducer-values not loading in gui upon update
+- upd flight>flightslice>extra reducer-values of convert id to name (country,airline) not changing in gui upon update
 - (react, flights, include) - recieves something other than arrary/string
 
 # Todo Features
 - notify on token expire, better refresh it (example in eyal's shelly project)
-- in display get - show country name instead of id
+- stage2:when ticket added, it needs to update remaining tickets of flight model
 
 # Todo - back
 Django server - remaining endpoint crud: (resources: eyal and tom projects) specific get - 1. flights.airline 2. flights.country x2 3. ticket.profile 4. profile.flight. get one - most crud. post - ticket to profile. delete - most crud.
-
 
 # Working summary - front
 * Components: 
@@ -36,6 +33,9 @@ Django server - remaining endpoint crud: (resources: eyal and tom projects) spec
 1. token saved in local storage and resets on logout
 2. on bad login wrong crediantials msg
 3. username display and login changes to logout
+4. add country, view countries
+5. airline registeration
+6. get flights, add, delete, update
 
 
 

@@ -31,6 +31,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['is_staff'] = user.is_staff
         token['is_active'] = user.is_active
         token['is_superuser'] = user.is_superuser
+        try:
+            CustomerProfile.objects.get(user=user)
+            token['is_customer'] = True
+        except:
+            token['is_customer'] = False
         # ...
         return token
 
@@ -42,15 +47,15 @@ class MyTokenObtainPairView(TokenObtainPairView):
 # signup
 @api_view(['POST'])
 def addUser(request):
-    try:
-        User.objects.create_user(username=request.data['username'],
-                                 email=request.data['email'],
-                                 password=request.data['password'],
-                                 is_staff=request.data['is_staff'],
-                                 is_superuser=request.data['is_superuser'])
-        return JsonResponse({"user added": request.data['username']})
-    except:
-        return Response({"User already exists ": request.data['username']})
+    # try:
+    User.objects.create_user(username=request.data['username'],
+                             email=request.data['email'],
+                             password=request.data['password'],
+                             is_staff=request.data['is_staff'],
+                             is_superuser=request.data['is_superuser'])
+    return JsonResponse({"user added": request.data['username']})
+    # except:
+    #     return Response({"User already exists ": request.data['username']})
 
 
 #   PROFILE
@@ -73,24 +78,38 @@ def getAllProfilesInfo(request):
 @permission_classes([IsAuthenticated])
 def addProfile(request):
     user = request.user
-    try:
-        CustomerProfile.objects.create(
-            phone_num=request.data['phone_num'], credit_card=request.data['credit_card'], address=request.data['address'], user=user)
-        return Response({"Profile created": user.username})
-    except:
-        return Response({"Profile already exist ": user.username})
-    # Profile.objects.get(user_id=user.id)
+    CustomerProfile.objects.create(
+        phone_num=request.data['phone_num'], credit_card=request.data['credit_card'], address=request.data['address'], user=user)
+    return Response({"Profile created": user.username})
+
 
 # get customerprofile info for user
-
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getCustomerProfile(request):
     user = request.user
-    profile = user.customerprofile_set.all()
-    serializer = CustomerProfileSerializer(profile, many=True)
+    profile = CustomerProfile.objects.get(user=user)
+    serializer = CustomerProfileSerializer(profile)
     return Response(serializer.data)
+
+
+# Update CustomerProfile
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updCustomerProfile(request):
+    user = request.user
+    temp = CustomerProfile.objects.get(user=user)
+    temp.address = request.data['address']
+    temp.phone_num = request.data['phone_num']
+    temp.credit_card = request.data['credit_card']
+
+    Dict_serving_updCustomerProfile = {
+        "address": temp.address,
+        "phone_num": temp.phone_num,
+        "credit_card": temp.credit_card,
+        'user': user}
+    temp.save()
+    return JsonResponse(Dict_serving_updCustomerProfile)
 
 
 #   USER
@@ -165,7 +184,6 @@ def getAirlines(request):
     return Response(serializer.data)
 
 
-
 #       FLIGHT
 
 #   get all flight info
@@ -173,13 +191,15 @@ def getAirlines(request):
 def getAllFlightsInfo(request):
     flights = Flight.objects.all()
     serializer = FlightSerializer(flights, many=True)
-    NameAirlineCountrySeriliazer=convertidNameFlightSerializer(flights, many=True).data
+    NameAirlineCountrySeriliazer = convertidNameFlightSerializer(
+        flights, many=True).data
     # print(NameAirlineCountrySeriliazer)
-    bothSeri={"main_seri":serializer.data,"nameconvert":NameAirlineCountrySeriliazer}
+    bothSeri = {"main_seri": serializer.data,
+                "nameconvert": NameAirlineCountrySeriliazer}
     return Response(bothSeri)
 
 
-# add flight general
+# add flight (generally)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addFlight(request):
@@ -187,7 +207,7 @@ def addFlight(request):
     print(user.id)
     # if user.is_staff:
     # try:
-    _addFlight=Flight.objects.create(
+    _addFlight = Flight.objects.create(
         departure_time=request.data['departure_time'],
         landing_time=request.data['landing_time'],
         remaining_tickets=request.data['remaining_tickets'],
@@ -197,30 +217,26 @@ def addFlight(request):
             country_name=request.data['origin_country']),
         airline_company=AirlineCompany.objects.get(airline_name=request.data['airline_company']))
     Dict_serving_addFlight = {
-    "landing_time": request.data['landing_time'],
-    "departure_time": request.data['departure_time'],
-    "remaining_tickets": request.data['remaining_tickets'],
-    "airline_company": request.data['airline_company'],
-    "_id":_addFlight.pk,
-    "destination_country": request.data['destination_country'],
-    "origin_country": request.data['origin_country']}
+        "landing_time": request.data['landing_time'],
+        "departure_time": request.data['departure_time'],
+        "remaining_tickets": request.data['remaining_tickets'],
+        "airline_company": request.data['airline_company'],
+        "_id": _addFlight.pk,
+        "destination_country": request.data['destination_country'],
+        "origin_country": request.data['origin_country']}
     return Response(Dict_serving_addFlight)
     # except:
     #     return Response("something failed")
     # else:
     #     return Response({"access to add flight is restricted to staff": user.username})
 
+
 #  Delete Flight
-
-
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def deleteFlight(request, id):
-    # try:
     Flight.delete(Flight.objects.get(_id=id))
     return Response({"flight deleted": id})
-    # except:
-    #     return Response({"something failed": id})
 
 
 # Update Flight
@@ -252,6 +268,20 @@ def updFlight(request, id):
 
 #       TICKET
 
+
+#  get tickets for customer/user
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getTicketForCustomer(request):
+    user = request.user
+    customer=CustomerProfile.objects.get(user=user)
+    ticket = Ticket.objects.get(customer=customer)
+    print(ticket)
+    serializer = TicketSerializer(ticket)
+    return JsonResponse(serializer.data)
+
+
+
 #   get all ticket info
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -265,39 +295,38 @@ def getAllTicketsInfo(request):
         return Response({"access to display all tickets is restricted to admin": user.username})
 
 
-# add ticket to profile --- how to connect customer and flight foreign key??
-# stage2:when ticket added, it needs to update remaining tickets of flight model
+# add ticket to customer
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addTicketForProfile(request):
-    # try:
     user = request.user
-    print(user.customerprofile_set.all().count)
-    if (user.customerprofile_set.all().count):  # returns empty array, how to check if array not empty?
-        Ticket.objects.create(
-            customer=request.data['country_id'],
-            flight=request.data['country_id'],
-            user_id=user.id)
-        return Response({"ticket added": user.username})
-    else:
-        return Response({"something went wrong, maybe Profile already has ticket ": user.username})
-    # except:
-    #     return Response({"Profile already has ticket ": user.username})
+    # print(user.customerprofile_set.all().count)
+    Ticket.objects.create(
+        customer=CustomerProfile.objects.get(user=user),
+        flight=Flight.objects.get(_id=request.data['flight_id'])
+    )
+    return JsonResponse({"user": user.username, "flight": request.data['flight_id']})
+
+    # if (user.customerprofile_set.all().count):  # returns empty array, how to check if array not empty?
+
+
+#  Delete Ticket
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteTicket(request, id):
+    print(id)
+    Ticket.delete(Ticket.objects.get(_id=id))
+    return Response({"Ticket deleted": id})
 
 
 #       COUNTRY
 
 #   get all country info
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def getAllCountrysInfo(request):
-    user = request.user
-    if user.is_superuser:
-        countrys = Country.objects.all()
-        serializer = CountrySerializer(countrys, many=True)
-        return Response(serializer.data)
-    else:
-        return Response({"access to display all countries is restricted to admin": user.username})
+    countrys = Country.objects.all()
+    serializer = CountrySerializer(countrys, many=True)
+    return Response(serializer.data)
 
 # add country
 

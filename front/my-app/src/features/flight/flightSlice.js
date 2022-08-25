@@ -52,11 +52,11 @@ export const flightSlice = createSlice({
       })
       .addCase(addFlightAsync.fulfilled, (state, action) => {
         state.flights.push(action.payload);
-        console.log(action.payload)
+        // console.log(action.payload)
       })
       .addCase(addFlightAsync.pending, (state, action) => {
-        console.log("pending");
-        console.log(action.payload)
+        // console.log("pending");
+        // console.log(action.payload)
       })
       .addCase(updFlightAsync.fulfilled, (state, action) => {
         let myupdFlight = state.flights.find(
@@ -67,7 +67,7 @@ export const flightSlice = createSlice({
         myupdFlight.destination_country = action.payload.destination_country;
         myupdFlight.airline_company = action.payload.airline_company;
         myupdFlight.origin_country = action.payload.origin_country;
-        console.log(current(myupdFlight))
+        // console.log(current(myupdFlight))
         myupdFlight.remaining_tickets = action.payload.remaining_tickets;
         myupdFlight.departure_time = action.payload.departure_time;
         myupdFlight.landing_time = action.payload.landing_time;
