@@ -4,14 +4,12 @@ import { getFlights, addFlight, updFlight, deleteFlight } from "./flightAPI";
 
 const initialState = {
   flights: [],
-  nameconvert_airlineCountry: [],
 };
 
 export const getFlightsAsync = createAsyncThunk(
   "flight/getFlights",
   async () => {
     const response = await getFlights();
-    // console.log(response.data.nameconvert)
     return response.data;
   }
 );
@@ -46,9 +44,7 @@ export const flightSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getFlightsAsync.fulfilled, (state, action) => {
-        state.flights = action.payload.main_seri;
-        // console.log(action.payload.nameconvert)
-        state.nameconvert_airlineCountry = action.payload.nameconvert;
+        state.flights = action.payload;
       })
       .addCase(addFlightAsync.fulfilled, (state, action) => {
         state.flights.push(action.payload);
@@ -80,5 +76,4 @@ export const flightSlice = createSlice({
 
 // export const { } = flightSlice.actions;
 export const selectFlights = (state) => state.flight.flights;
-export const selectnameconvert_airlineCountry = (state) => state.flight.nameconvert_airlineCountry;
 export default flightSlice.reducer;

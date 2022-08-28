@@ -7,8 +7,8 @@ import { selectToken, } from "../user/loginSlice";
 const AddFlight = () => {
     const dispatch = useDispatch();
     const myToken = useSelector(selectToken);
-    const [airline_company, setairline_company] = useState("aircompanytest");
-    const [remaining_tickets, setremaining_tickets] = useState(55);
+    const [airline_company, setairline_company] = useState("airlinetest");
+    const [remaining_tickets, setremaining_tickets] = useState(100);
     const [destination_country, setdestination_country] = useState("spain");
     const [origin_country, setorigin_country] = useState("germany");
     const [departure_date, setdeparture_date] = useState("2022-08-25");

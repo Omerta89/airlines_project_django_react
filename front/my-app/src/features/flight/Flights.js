@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectFlights, getFlightsAsync, updFlightAsync, deleteFlightAsync, selectnameconvert_airlineCountry } from "./flightSlice";
+import { selectFlights, getFlightsAsync, updFlightAsync, deleteFlightAsync } from "./flightSlice";
 import { selectToken, selectIs_active, selectIs_staff, selectIs_superuser, selectlogin, selectUsername } from "../user/loginSlice";
 import { addTicketAsync } from "../ticket/ticketSlice";
 import "../../styles.css";
@@ -11,7 +11,6 @@ const Flights = () => {
   const myFlights = useSelector(selectFlights);
   const loginStatus = useSelector(selectlogin);
   const userName = useSelector(selectUsername);
-  const nameConvert = useSelector(selectnameconvert_airlineCountry);
   // eslint-disable-next-line no-unused-vars
   const is_active = useSelector(selectIs_active);
   const is_staff = useSelector(selectIs_staff);
@@ -33,14 +32,6 @@ const Flights = () => {
     dispatch(getFlightsAsync());
     // eslint-disable-next-line
   }, []);
-  // mapping flights and merging on id with nameConvert map. this to convert id to name. (because the two data was on two different models in back)
-  let names_map = nameConvert ? nameConvert.map((name) => {
-    return { "_id": name._id, "airline_company": name.airline_company, "origin_country": name.origin_country, "destination_country": name.destination_country };
-  }) : console.log("something is wrong with names_map")
-  let flights_map = myFlights ? myFlights.map((flight) => {
-    return { "_id": flight._id, "airline_company": flight.airline_company, "remaining_tickets": flight.remaining_tickets, "landing_time": flight.landing_time, "departure_time": flight.departure_time, "origin_country": flight.origin_country, "destination_country": flight.destination_country };
-  }) : console.log("something is wrong with flights_map")
-  const merged_map_name = flights_map.map(t1 => ({ ...t1, ...names_map.find(t2 => t2._id === t1._id) }))
 
 
   return (
@@ -76,8 +67,11 @@ const Flights = () => {
         .filter(
           (x) =>
             x.destination_country.includes(search) && x.airline_company.includes(searchCompany)
-        ) */}
+        ) : "probably include gettin not array"} */}
       {/* breaking filter to do lion in the desert */}
+
+
+
 
 
 
@@ -85,7 +79,7 @@ const Flights = () => {
       <div className="w3-container" style={{ "backgroundColor": "steelblue" }}>
         <h2>Flights</h2> number of flights: {myFlights.length}
 
-        {merged_map_name.map((flight, i) => (
+        {myFlights.map((flight, i) => (
           <div className="w3-container" style={{ "backgroundColor": "steelblue" }} key={i} >
             <h3>airline_company:  {flight.airline_company}</h3>
             <div className="w3-card-4" style={{ "width": "70%" }} >
@@ -95,9 +89,9 @@ const Flights = () => {
               <div className="w3-container">
                 <p>flight from: {flight.origin_country} {/* country is in number=need to get country name */}
                   to destination_country: {flight.destination_country}</p>
-                <hr />
+                <br />
                 <img src="airplane.jpg" alt="airplane" className="w3-left w3-circle w3-margin-right photo " style={{ "display": "flex", "flexDirection": "row" }}  ></img>
-                departure_time: {flight.departure_time} <hr /> landing_time: {flight.landing_time}  <hr />remaining_tickets: {flight.remaining_tickets} <br />
+                departure_time: {flight.departure_time} <br /> landing_time: {flight.landing_time}  <br />remaining_tickets: {flight.remaining_tickets} <br />
 
                 {(is_superuser || is_staff) && <div>
                   <button className="w3-button w3-block w3-dark-grey"
@@ -129,7 +123,7 @@ const Flights = () => {
                   Buy Ticket
                 </button>
 
-                <br />
+                <hr />
               </div>
             </div>
           </div>

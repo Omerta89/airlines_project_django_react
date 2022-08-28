@@ -4,7 +4,7 @@ import { getTickets, addTicket, updTicket, deleteTicket, getTicketforCustomer } 
 
 const initialState = {
   tickets: [],
-  nameconvert_airlineCountry: [],
+  flightticket: [],
 };
 
 export const getTicketsAsync = createAsyncThunk(
@@ -65,7 +65,7 @@ export const ticketSlice = createSlice({
       })
       .addCase(addTicketAsync.fulfilled, (state, action) => {
         state.tickets.push(action.payload);
-        // console.log(action.payload)
+        console.log(action.payload)
       })
       .addCase(addTicketAsync.pending, (state, action) => {
         // console.log("pending");
@@ -89,13 +89,15 @@ export const ticketSlice = createSlice({
         state.tickets = [];
 
       }).addCase(getTicketforCustomerAsync.fulfilled, (state, action) => {
-        state.tickets = action.payload;
-        console.log(action.payload)
+        state.tickets = action.payload.ticketseri;
+        state.flightticket=action.payload.flightseri
+        console.log(action.payload.ticketseri)
+        console.log(action.payload.flightseri)
       });
   },
 });
 
 // export const { } = ticketSlice.actions;
 export const selectTickets = (state) => state.ticket.tickets;
-export const selectnameconvert_airlineCountry = (state) => state.ticket.nameconvert_airlineCountry;
+export const selectFlightseri = (state) => state.ticket.flightticket;
 export default ticketSlice.reducer;

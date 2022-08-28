@@ -7,11 +7,10 @@ from base.models import Country, CustomerProfile, AirlineCompany, Flight, Ticket
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User
-from ..serializers import AirlineSerializer, CountrySerializer, CustomerProfileSerializer, FlightSerializer, TicketSerializer, UserInfoSerializer, UsersSerSerializer, aircompanyIdToNameSerializer, convertidNameFlightSerializer
+from ..serializers import AirlineSerializer, CountrySerializer, CustomerProfileSerializer, FlightSerializer, TicketSerializer, UserInfoSerializer, UsersSerSerializer, aircompanyIdToNameSerializer
+
 
 # starter page
-
-
 @api_view(['GET'])
 def getRoutes(request):
     routes = [
@@ -19,9 +18,8 @@ def getRoutes(request):
         '/api/token/refresh', ]
     return Response(routes)
 
+
 # login
-
-
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -191,12 +189,9 @@ def getAirlines(request):
 def getAllFlightsInfo(request):
     flights = Flight.objects.all()
     serializer = FlightSerializer(flights, many=True)
-    NameAirlineCountrySeriliazer = convertidNameFlightSerializer(
-        flights, many=True).data
-    # print(NameAirlineCountrySeriliazer)
-    bothSeri = {"main_seri": serializer.data,
-                "nameconvert": NameAirlineCountrySeriliazer}
-    return Response(bothSeri)
+    return Response(serializer.data)
+
+
 
 
 # add flight (generally)
@@ -275,11 +270,20 @@ def updFlight(request, id):
 def getTicketForCustomer(request):
     user = request.user
     customer=CustomerProfile.objects.get(user=user)
-    ticket = Ticket.objects.get(customer=customer)
-    print(ticket)
-    serializer = TicketSerializer(ticket)
-    return JsonResponse(serializer.data)
+    tickets = Ticket.objects.filter(customer=customer)
+    # print(tickets)
+    flightsoftickets=[]
+    for ticket in tickets:
+        ticketflight= Flight.objects.get(_id=ticket.flight_id)
+        flightserializer = FlightSerializer(ticketflight)
+        # print(flightserializer.data)
+        flightsoftickets.append(flightserializer.data)
+        print(flightsoftickets)
+    serializer = TicketSerializer(tickets,many=True)
+    # print(serializer.data)
+    return JsonResponse({"ticketseri":serializer.data , "flightseri":flightsoftickets})
 
+   #  get single flight
 
 
 #   get all ticket info
@@ -328,9 +332,9 @@ def getAllCountrysInfo(request):
     serializer = CountrySerializer(countrys, many=True)
     return Response(serializer.data)
 
+
+
 # add country
-
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addCountry(request):
