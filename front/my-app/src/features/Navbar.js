@@ -17,7 +17,7 @@ const Navbar = () => {
                 {/* if logged- show logout/customer reg, else show login/register */}
                 {loginStatus ? <div>
                     {" "}| <button onClick={() => dispatch(logout())}>Logout</button> {" "}| {is_customer ?  <div> <Link to="/custickets"> View Customer Tickets </Link> "edit profile" </div> : <Link to="/addprofile">Customer Registeration</Link>} 
-                   </div> : <div> <Link to="/login">Login</Link> {"or "} <Link to="/register">Register</Link></div>}
+                   </div> : <div> <Link to="/signin">Sign In</Link> {"or "} <Link to="/register">Register</Link></div>}
 
                 {/* admin/airline only */}
                 {(is_staff || is_superuser) && <div> {" "}|<Link to="/addflight">Add Flight</Link> {" "}| <Link to="/countrys">View Countries</Link> {" "}| <Link to="/addairline">Airline Registeration</Link> {" "}| </div>}

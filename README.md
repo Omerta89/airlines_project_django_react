@@ -1,26 +1,23 @@
-# Instructions
-- Running Django: 1) cd .\back\ 2) .\myenv\Scripts\activate 3) python .\manage.py runserver
-- Running React: 1) cd .\front\ 2) cd .\my-app\ 3) npm start
+
 
 
 # Scribble
 search
 
 
-
 # Progress
-CRUD :)
-admin:
-add validations: (notify if aircompany name is not a match to DB), (departure_time cannot exceed arrival_time)
-search
+mui comp made mine
 
 # Issues/bugs
-- upd flight>flightslice>extra reducer-values of convert id to name (country,airline) not changing in gui upon update
 - (react, flights, include) - recieves something other than arrary/string
 
 # Todo Features
 - notify on token expire, better refresh it (example in eyal's shelly project)
 - stage2:when ticket added, it needs to update remaining tickets of flight model
+CRUD :)
+admin:
+add validations: (notify if aircompany name is not a match to DB), (departure_time cannot exceed arrival_time)
+search
 
 # Todo - back
 Django server - remaining endpoint crud: (resources: eyal and tom projects) specific get - 1. flights.airline 2. flights.country x2 3. ticket.profile 4. profile.flight. get one - most crud. post - ticket to profile. delete - most crud.
@@ -36,12 +33,15 @@ Django server - remaining endpoint crud: (resources: eyal and tom projects) spec
 4. add country, view countries
 5. airline registeration
 6. get flights, add, delete, update
+7. adapted a mui component "sign in"
 
 
 
 
 
-
+# Instructions To Run (from IDE)
+- Running Django: 1) cd .\back\ 2) .\myenv\Scripts\activate 3) python .\manage.py runserver
+- Running React: 1) cd .\front\ 2) cd .\my-app\ 3) npm start
 
 # this project is about, and it does
 

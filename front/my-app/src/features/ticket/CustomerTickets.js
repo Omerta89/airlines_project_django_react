@@ -34,13 +34,11 @@ const Tickets = () => {
         <h5> {loginStatus ? `Hello ${userName}` : "Hello annoymous User"} </h5>
       </div >
 
-
+      <span class="material-icons-outlined">
+settings
+</span>
 
 {typeof myTickets}
-
-
-
-
 
 
       {[
